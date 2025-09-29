@@ -1,0 +1,37 @@
+# gradle CI build
+
+name: Java CI with Gradle
+
+on:
+  push:                         # CI
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        cache: 'gradle'
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Build with Gradle 
+      run: ./gradlew build
+    
+    - name: Run with Gradle
+      run: ./gradlew run
+    
+    - name: Upload distributions
+      uses: actions/upload-artifact@v4
+      with:
+        name: distibutions
+        path: build/distributions
